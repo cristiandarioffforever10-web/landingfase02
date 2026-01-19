@@ -312,7 +312,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: pulse-core 3s infinite ease-in-out;
+            animation: core-pulse 3s infinite ease-out;
+            /* Match satellite timing */
         }
 
         .core-bible i {
@@ -394,17 +395,21 @@
             opacity: 1;
         }
 
-        @keyframes pulse-core {
-
-            0%,
-            100% {
-                box-shadow: 0 0 40px var(--brand-emerald), inset 0 0 20px #a7f3d0;
+        /* Updated Core Pulse to Sync with Satellites */
+        @keyframes core-pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6), inset 0 0 20px #a7f3d0;
                 transform: scale(1);
             }
 
-            50% {
-                box-shadow: 0 0 70px var(--brand-emerald), inset 0 0 30px #d1fae5;
+            70% {
+                box-shadow: 0 0 0 30px rgba(16, 185, 129, 0), inset 0 0 30px #d1fae5;
                 transform: scale(1.05);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0), inset 0 0 20px #a7f3d0;
+                transform: scale(1);
             }
         }
 
@@ -439,6 +444,105 @@
             opacity: 1;
             pointer-events: all;
         }
+
+        /* ANTIGRAVITY NEW STYLES */
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes counter-spin {
+            100% {
+                transform: rotate(-360deg);
+            }
+        }
+
+        @keyframes emerald-pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 15px rgba(16, 185, 129, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+        }
+
+        .orbit-system.rotating {
+            animation: spin 60s linear infinite;
+        }
+
+        .satellite-rotator {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .orbit-system.rotating .satellite-rotator {
+            animation: counter-spin 60s linear infinite;
+        }
+
+        /* Pause orbit on hover */
+        .orbit-system.paused,
+        .orbit-system.paused .satellite-rotator {
+            animation-play-state: paused !important;
+        }
+
+        .satellite {
+            /* Existing styles preserved */
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+
+            /* New: Ambient Pulse */
+            animation: emerald-pulse 3s infinite;
+        }
+
+        .satellite-tooltip {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: rgba(2, 6, 23, 0.95);
+            color: #10b981;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+            opacity: 0;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            pointer-events: none;
+            z-index: 100;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8);
+            visibility: hidden;
+        }
+
+        .satellite:hover .satellite-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
 
         .modal-content {
             width: 90%;
@@ -837,7 +941,14 @@
 
                 <!-- Central Core -->
                 <div class="core-bible">
-                    <i class="fas fa-book-journal-whills"></i> <!-- Bible/Book Icon or Logo -->
+                    <div class="relative flex items-center justify-center">
+                        <i
+                            class="fas fa-satellite-dish text-5xl text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.8)]"></i>
+                        <span
+                            class="absolute -top-2 -right-3 w-4 h-4 bg-emerald-400 rounded-full shadow-[0_0_15px_#10b981] animate-ping"></span>
+                        <span
+                            class="absolute -top-2 -right-3 w-4 h-4 bg-emerald-400 rounded-full shadow-[0_0_15px_#10b981]"></span>
+                    </div>
                 </div>
 
                 <!-- Satellites will be injected here by JS -->
@@ -1202,16 +1313,76 @@
 
         // --- ANTIGRAVITY SECTION LOGIC ---
         const commandments = [
-            { id: 1, title: "No preguntarás más", before: "El mostrador es un nido de gritos. '¿Te llevaste el de la calle X?'. Incertidumbre constante.", after: "La duda muere. El pedido está amarrado al repartidor en pantalla. Paz Mental." },
-            { id: 2, title: "Matarás la lapicera", before: "Tickets manchados de grasa. Anotar números a mano doble vez. Cero eficiencia.", after: "Drag-and-Drop. El sistema escribe por vos. Más rápido, más limpio." },
-            { id: 3, title: "Erradicarás el papel", before: "Tickets que vuelan o se pierden. Dependencia total del papel físico.", after: "Cero tickets viajando. Trazabilidad total digital desde el monitor." },
-            { id: 4, title: "No contarás tickets", before: "Contando papeles arrugados a la 1 AM. El cansancio lleva al error.", after: "Reportes instantáneos. Cierre de turno en 30 segundos con conteo exacto." },
-            { id: 5, title: "Dinero Seguro", before: "Pedidos entregados que se olvidan de cobrar. Dinero que se evapora.", after: "Conciliación Blindada. Cada ID que salió debe ser rendido." },
-            { id: 6, title: "Memoria Infinita", before: "'Esto no me lo diste'. Palabra contra palabra sin pruebas.", after: "Historial Inmutable. Registro exacto de qué llevó cada uno y a qué hora." },
-            { id: 7, title: "Bloqueo de Error", before: "Dos repartidores se llevan el mismo pedido. Pédida doble.", after: "Validación Atómica. El sistema bloquea asignaciones duplicadas." },
-            { id: 8, title: "Respuestas de Líder", before: "'Ya debe estar por llegar'. Respuestas dudosas que destruyen reputación.", after: "'Salió hace 12 minutos con Juan'. Precisión que fideliza clientes." },
-            { id: 9, title: "Buscador de Rayo", before: "Revolver montaña de tickets buscando el #145 mientras suena el teléfono.", after: "Ubicación exacta al instante escribiendo solo el ID." },
-            { id: 10, title: "Suprimirás la Mentira", before: "El 'me olvidé de anotar' es la excusa perfecta en el caos.", after: "Torre de Control. La transparencia es total, la mentira no tiene lugar." }
+            {
+                id: 1,
+                title: "Estado del Pedido", // Renamed as per prompt list
+                iconHTML: `<div class="relative flex items-center justify-center"><i class="far fa-comment-dots text-lg"></i><i class="fas fa-check absolute -bottom-1 -right-1 text-[10px] text-emerald-400 bg-slate-900 rounded-full border border-slate-900"></i></div>`,
+                before: "El mostrador es un nido de gritos. '¿Te llevaste el de la calle X?'. Incertidumbre constante.",
+                after: "La duda muere. El pedido está amarrado al repartidor en pantalla. Paz Mental."
+            },
+            {
+                id: 2,
+                title: "Fin de la Lapicera",
+                iconHTML: `<i class="fas fa-hand-pointer text-lg"></i>`,
+                before: "Tickets manchados de grasa. Anotar números a mano doble vez. Cero eficiencia.",
+                after: "Drag-and-Drop. El sistema escribe por vos. Más rápido, más limpio."
+            },
+            {
+                id: 3,
+                title: "Cero Papel",
+                iconHTML: `<div class="relative"><i class="fas fa-ticket-alt text-lg transform -rotate-12"></i><i class="fas fa-wind absolute -right-3 top-1 text-[10px] opacity-70"></i></div>`,
+                before: "Tickets que vuelan o se pierden. Dependencia total del papel físico.",
+                after: "Cero tickets viajando. Trazabilidad total digital desde el monitor."
+            },
+            {
+                id: 4,
+                title: "Conteo Automático",
+                iconHTML: `<div class="relative"><i class="fas fa-calculator text-lg text-slate-400"></i><div class="absolute inset-0 flex items-center justify-center"><div class="w-full h-0.5 bg-red-500 transform rotate-45"></div></div></div>`,
+                before: "Contando papeles arrugados a la 1 AM. El cansancio lleva al error.",
+                after: "Reportes instantáneos. Cierre de turno en 30 segundos con conteo exacto."
+            },
+            {
+                id: 5,
+                title: "Dinero Blindado",
+                iconHTML: `<div class="relative flex items-center justify-center"><i class="fas fa-shield-alt text-lg"></i><span class="absolute text-[9px] font-black text-slate-900 pt-0.5">$</span></div>`,
+                before: "Pedidos entregados que se olvidan de cobrar. Dinero que se evapora.",
+                after: "Conciliación Blindada. Cada ID que salió debe ser rendido."
+            },
+            {
+                id: 6,
+                title: "Historial de Viajes",
+                iconHTML: `<i class="fas fa-history text-lg"></i>`,
+                before: "'Esto no me lo diste'. Palabra contra palabra sin pruebas.",
+                after: "Historial Inmutable. Registro exacto de qué llevó cada uno y a qué hora."
+            },
+            {
+                id: 7,
+                title: "No Duplicados",
+                iconHTML: `<div class="flex -space-x-2"><i class="fas fa-ban text-red-500"></i><i class="fas fa-ban text-red-500 opacity-70"></i></div>`,
+                before: "Dos repartidores se llevan el mismo pedido. Pédida doble.",
+                after: "Validación Atómica. El sistema bloquea asignaciones duplicadas."
+            },
+            {
+                id: 8,
+                title: "Respuesta al Cliente",
+                iconHTML: `<div class="relative"><i class="fas fa-headset text-lg"></i><i class="fas fa-wifi absolute -top-2 -right-2 text-[8px] text-emerald-500"></i></div>`,
+                before: "'Ya debe estar por llegar'. Respuestas dudosas que destruyen reputación.",
+                after: "'Salió hace 12 minutos con Juan'. Precisión que fideliza clientes."
+            },
+            {
+                id: 9,
+                title: "Ubicación Exacta",
+                iconHTML: `<i class="fas fa-crosshairs text-lg"></i>`,
+                before: "Revolver montaña de tickets buscando el #145 mientras suena el teléfono.",
+                after: "Ubicación exacta al instante escribiendo solo el ID."
+            },
+            {
+                id: 10,
+                title: "Torre de Control",
+                iconHTML: `<i class="fas fa-broadcast-tower text-lg animate-pulse"></i>`,
+                before: "El 'me olvidé de anotar' es la excusa perfecta en el caos.",
+                after: "Torre de Control. La transparencia es total, la mentira no tiene lugar."
+            }
         ];
 
         let satellitesRendered = false;
@@ -1226,15 +1397,35 @@
                 const wrapper = document.createElement('div');
                 wrapper.className = 'satellite-wrapper';
 
+                // Create Rotator (Handles Counter Rotation)
+                const rotator = document.createElement('div');
+                rotator.className = 'satellite-rotator';
+
                 // Create Inner Satellite (Handles Visuals + Float Animation)
                 const el = document.createElement('div');
                 el.className = 'satellite';
                 el.dataset.id = cmd.id;
-                el.innerHTML = `<i class="fas fa-satellite"></i>`;
-                el.onclick = () => openCommandmentModal(cmd.id);
-                el.title = cmd.title;
+                // Use custom iconHTML
+                el.innerHTML = cmd.iconHTML;
 
-                wrapper.appendChild(el);
+                // Add Tooltip
+                const tooltip = document.createElement('div');
+                tooltip.className = 'satellite-tooltip';
+                tooltip.innerText = cmd.title;
+                el.appendChild(tooltip);
+
+                // Interactions
+                el.onclick = () => openCommandmentModal(cmd.id);
+                // Pause rotation on hover
+                el.addEventListener('mouseenter', () => {
+                    document.getElementById('orbit-system').classList.add('paused');
+                });
+                el.addEventListener('mouseleave', () => {
+                    document.getElementById('orbit-system').classList.remove('paused');
+                });
+
+                rotator.appendChild(el);
+                wrapper.appendChild(rotator);
 
                 // Random position for chaos (applied to wrapper)
                 const angle = Math.random() * Math.PI * 2;
@@ -1284,12 +1475,18 @@
                     setTimeout(() => {
                         const inner = wrapper.querySelector('.satellite');
                         if (inner) {
-                            inner.style.animation = `float-satellite ${3 + Math.random()}s ease-in-out infinite alternate`;
-                            inner.style.animationDelay = `${Math.random() * 2}s`;
+                            // inner.style.animation = `float-satellite ${3 + Math.random()}s ease-in-out infinite alternate`;
+                            // Replacing float with pulse and orbit logic. Float makes orbit jittery.
+                            // inner.style.animationDelay = `${Math.random() * 2}s`;
                         }
                     }, 1600);
                 }, 100 * index); // Staggered entry
             });
+
+            // Start system rotation after chaos settles (approx 2s + 1s stagger = 3s)
+            setTimeout(() => {
+                document.getElementById('orbit-system').classList.add('rotating');
+            }, 3000);
         }
 
         // --- MODAL LOGIC & AUDIO ---
