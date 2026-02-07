@@ -458,17 +458,15 @@
             }
         }
 
-        @keyframes emerald-pulse {
+        @keyframes emerald-pulse-optimized {
             0% {
-                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
-            }
-
-            70% {
-                box-shadow: 0 0 0 15px rgba(16, 185, 129, 0);
+                transform: scale(1);
+                opacity: 0.6;
             }
 
             100% {
-                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+                transform: scale(1.6);
+                opacity: 0;
             }
         }
 
@@ -499,9 +497,13 @@
             position: relative;
             width: 100%;
             height: 100%;
+            box-sizing: border-box;
+            /* Requested technical fix */
+            padding: 12px;
+            /* Requested breathing room */
             border-radius: 50%;
-            background: rgba(30, 41, 59, 0.8);
-            backdrop-filter: blur(8px);
+            background: rgba(30, 41, 59, 0.95);
+            /* More opaque for better perf without blur */
             border: 1px solid rgba(16, 185, 129, 0.3);
             display: flex;
             align-items: center;
@@ -509,9 +511,52 @@
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            outline: none;
+            /* Accessible focus managed below */
+        }
 
-            /* New: Ambient Pulse */
-            animation: emerald-pulse 3s infinite;
+        /* Ensure direct children (icons or wrappers) are centered and contained */
+        .satellite>* {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        /* Desktop-only blur */
+        @media (min-width: 769px) {
+            .satellite {
+                background: rgba(30, 41, 59, 0.8);
+                backdrop-filter: blur(8px);
+            }
+        }
+
+        .satellite i {
+            font-size: 1.4rem;
+            /* Adjusted to fit nicely within padding */
+            color: #94a3b8;
+            transition: color 0.3s;
+            line-height: 1;
+            /* Prevent line-height from adding vertical space */
+        }
+
+        .satellite:hover i {
+            color: #f8fafc;
+        }
+
+        .satellite::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 1px solid #10b981;
+            z-index: -1;
+            animation: emerald-pulse-optimized 3s infinite ease-out;
+        }
+
+        .satellite:focus-visible {
+            box-shadow: 0 0 0 2px #ecfdf5, 0 0 0 4px #10b981;
         }
 
         .satellite-tooltip {
@@ -519,7 +564,7 @@
             bottom: -50px;
             left: 50%;
             transform: translateX(-50%) translateY(10px);
-            background: rgba(2, 6, 23, 0.95);
+            /*background: rgba(2, 6, 23, 0.95);*/
             color: #10b981;
             padding: 8px 16px;
             border-radius: 12px;
@@ -530,10 +575,11 @@
             white-space: nowrap;
             opacity: 0;
             transition: all 0.3s ease;
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            text-shadow: 0 0 12px rgba(80, 200, 120, 0.8), 0 0 10px rgba(80, 200, 120, 0.5);
+            /*border: 1px solid rgba(16, 185, 129, 0.3);*/
             pointer-events: none;
             z-index: 100;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8);
+            /*box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8);*/
             visibility: hidden;
         }
 
@@ -567,9 +613,9 @@
         .comparison-slider {
             position: relative;
             width: 100%;
-            height: 400px;
+            height: 500px;
             overflow: hidden;
-            background: #000;
+            background: #020617;
         }
 
         .before-image,
@@ -579,7 +625,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
         }
 
         /* The container for the "After" image that we resize */
@@ -611,6 +657,16 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.1s;
+        }
+
+        .slider-handle:active {
+            cursor: grabbing;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .comparison-slider:active .slider-handle {
+            cursor: grabbing;
         }
 
         .slider-handle i {
@@ -722,7 +778,7 @@
                     </span>
                     <!-- Subtexto con Copywriting de Impacto basado en las fuentes -->
                     <span class="text-[10px] font-bold tracking-[0.25em] text-slate-400 uppercase">
-                        Pedidos sin contratiempos, <span class="text-emerald-500/80">Control Brutal.</span>
+                        Pedidos sin contratiempos, <span class="text-emerald-500/80">Control Brutal</span>
                     </span>
                 </div>
             </div>
@@ -764,13 +820,13 @@
                 </div>
                 <p class="text-xl text-slate-400 mb-8 max-w-md leading-relaxed">
                     El papel te funciona... hasta que tenés 20 pedidos y falta uno. Transformá tu mostrador en una <span
-                        class="text-emerald-400 font-bold">Torre de Control</span> y eliminá los gritos en 24 horas.
+                        class="text-emerald-400 font-bold">Torre de Control</span> y elimina el caos para siempre.
                 </p>
                 <div class="space-y-4">
                     <div
                         class="flex items-center gap-3 px-5 py-3 border border-red-500/20 rounded-xl bg-red-900/10 backdrop-blur-sm w-fit">
                         <i class="fas fa-exclamation-triangle text-red-500 text-sm"></i>
-                        <span class="text-xs font-bold text-red-200">El error humano te cuesta clientes.</span>
+                        <span class="text-xs font-bold text-red-200">El error humano te cuesta clientes</span>
                     </div>
 
                     <a href="#contacto"
@@ -789,7 +845,7 @@
                     class="video-container w-[260px] h-[560px] md:w-[320px] md:h-[550px] border-emerald-500/30 shadow-2xl relative bg-slate-900 group">
                     <video id="hero-video" class="avatar-video" autoplay loop muted playsinline
                         oncanplay="this.classList.add('loaded')">
-                        <source src="0.mp4" type="video/mp4">
+                        <source src="videos/0.mp4" type="video/mp4">
                     </video>
                     <div class="video-controls">
                         <button class="control-btn" onclick="togglePlay('hero-video', this)"><i
@@ -804,21 +860,21 @@
 
                 <div
                     class="hero-slider-container w-[450px] h-[560px] md:w-[550px] md:h-[550px] relative hidden sm:block group/slider">
-                    <div class="hero-slide active" style="background-image: url('i1.png')"></div>
-                    <div class="hero-slide" style="background-image: url('i2.png')"></div>
-                    <div class="hero-slide" style="background-image: url('i3.png')"></div>
-                    <div class="hero-slide" style="background-image: url('i4.png')"></div>
-                    <div class="hero-slide" style="background-image: url('i5.png')"></div>
-                    <div class="hero-slide" style="background-image: url('i6.png')"></div>
-                    <div class="hero-slide" style="background-image: url('i7.png')"></div>
-                    <div class="hero-slide" style="background-image: url('i8.png')"></div>
-                    <div class="hero-slide" style="background-image: url('i9.png')"></div>
-                    <div class="hero-slide" style="background-image: url('i10.png')"></div>
-                    <div class="hero-slide" style="background-image: url('i11.png')"></div>
-                    <div class="hero-slide" style="background-image: url('i12.png')"></div>
-                    <div class="hero-slide" style="background-image: url('i13.png')"></div>
-                    <div class="hero-slide" style="background-image: url('i14.png')"></div>
-                    <div class="hero-slide" style="background-image: url('i15.png')"></div>
+                    <div class="hero-slide active" style="background-image: url('img/heroimg/i1.webp')"></div>
+                    <div class="hero-slide" style="background-image: url('img/heroimg/i2.webp')"></div>
+                    <div class="hero-slide" style="background-image: url('img/heroimg/i3.webp')"></div>
+                    <div class="hero-slide" style="background-image: url('img/heroimg/i4.webp')"></div>
+                    <div class="hero-slide" style="background-image: url('img/heroimg/i5.webp')"></div>
+                    <div class="hero-slide" style="background-image: url('img/heroimg/i6.webp')"></div>
+                    <div class="hero-slide" style="background-image: url('img/heroimg/i7.webp')"></div>
+                    <div class="hero-slide" style="background-image: url('img/heroimg/i8.webp')"></div>
+                    <div class="hero-slide" style="background-image: url('img/heroimg/i9.webp')"></div>
+                    <div class="hero-slide" style="background-image: url('img/heroimg/i10.webp')"></div>
+                    <div class="hero-slide" style="background-image: url('img/heroimg/i11.webp')"></div>
+                    <div class="hero-slide" style="background-image: url('img/heroimg/i12.webp')"></div>
+                    <div class="hero-slide" style="background-image: url('img/heroimg/i13.webp')"></div>
+                    <div class="hero-slide" style="background-image: url('img/heroimg/i14.webp')"></div>
+                    <div class="hero-slide" style="background-image: url('img/heroimg/i15.webp')"></div>
                     <button class="slider-nav-btn prev" onclick="manualNav(-1)"><i
                             class="fas fa-chevron-left"></i></button>
                     <button class="slider-nav-btn next" onclick="manualNav(1)"><i
@@ -904,7 +960,7 @@
                 </div>
                 <div class="reveal">
                     <div class="glass-card p-4 rounded-3xl border-emerald-500/20 shadow-2xl">
-                        <video id="scroll-video-1" controls src="S2B.mp4"
+                        <video id="scroll-video-1" controls src="videos/S2B.mp4"
                             class="w-full rounded-2xl scroll-video"></video>
                         <div class="p-6">
                             <p class="text-emerald-500 font-black text-[11px] uppercase tracking-widest mb-2">Fortaleza
@@ -974,34 +1030,16 @@
             <div class="modal-body">
                 <!-- Comparison Slider -->
                 <div class="comparison-slider" id="comparison-slider">
-                    <!-- Images (Placeholders for now) -->
                     <!-- Background (Before) -->
-                    <div class="before-image bg-red-900/50 flex items-center justify-center p-8 text-center">
-                        <!-- Content for Before side layout if not strictly image -->
-                        <div class="max-w-xs">
-                            <i class="fas fa-exclamation-circle text-4xl text-red-500 mb-4"></i>
-                            <h4 class="text-red-400 font-bold uppercase mb-2">Caos (Antes)</h4>
-                            <p id="modal-text-before" class="text-white text-sm">Descripción del problema...</p>
-                        </div>
+                    <div class="before-image-container relative w-full h-full bg-slate-950">
+                        <img id="modal-img-before" src="" class="before-image opacity-60">
                     </div>
 
-                    <!-- Foreground (After) -->
-                    <div class="after-container" id="slider-after-container">
-                        <div class="after-image bg-emerald-900/80 flex items-center justify-center p-8 text-center"
-                            style="width: 200vw;">
-                            <!-- width needs to be wider to counter container clip? No, using different layout technique for text -->
-                            <!-- To properly mask the text/content for the 'After' part without distorting it, we need an inner container that is displaced inversely or fixed. 
-                                  For text content: simpler to just have two overlapping divs and clip-path, but clip-based sliders are tricker with complex HTML content.
-                                  Let's stick to width/overflow hidden for the container, and the content inside must be full width of PARENT so it doesn't squash.
-                             -->
-                            <div style="width: 100%; height: 100%; position: absolute; top:0; left:0; width: 100vw; max-width: 900px; display: flex; align-items: center; justify-content: center;"
-                                class="bg-emerald-900/95">
-                                <div class="max-w-xs">
-                                    <i class="fas fa-check-circle text-4xl text-emerald-400 mb-4"></i>
-                                    <h4 class="text-emerald-400 font-bold uppercase mb-2">Orden (Después)</h4>
-                                    <p id="modal-text-after" class="text-white text-sm">Solución RutaTotal...</p>
-                                </div>
-                            </div>
+                    <div class="after-container border-r-4 border-emerald-500" id="slider-after-container">
+                        <div class="after-image-container relative h-full bg-slate-950"
+                            style="width: 100vw; max-width: 900px;">
+                            <video id="modal-video-after" class="after-image opacity-70" autoplay loop muted
+                                playsinline></video>
                         </div>
                         <span class="slider-label label-after">DESPUÉS</span>
                     </div>
@@ -1010,7 +1048,7 @@
 
                     <!-- Handle -->
                     <div class="slider-handle" id="slider-handle">
-                        <i class="fas fa-arrows-alt-h"></i>
+                        <i class="fas fa-arrows-alt-h text-emerald-600"></i>
                     </div>
                 </div>
             </div>
@@ -1051,8 +1089,12 @@
                         <h4 class="text-xl font-black mb-2 uppercase">Consola Local</h4>
                         <p class="text-slate-300 text-xs font-bold mb-3 uppercase tracking-tighter">Control de Despacho
                         </p>
-                        <p class="text-slate-400 text-[11px] leading-relaxed mb-4">Centraliza la información de los
-                            repartidores. Valida el flujo de salida de pedidos y elimina el desorden visual.</p>
+                        <p class="text-slate-400 text-[11px] leading-relaxed mb-4">
+                            Centraliza la información de los pedidos. Donde antes había gritos y tickets perdidos, ahora
+                            hay control digital.
+                            Vinculá cada ID al instante, eliminá el uso de la lapicera y sabé la verdad de cada pedido
+                            sin preguntar nada.
+                        </p>
                         <div class="pt-4 border-t border-white/5">
                             <span class="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Enfoque:
                                 Claridad Informativa</span>
@@ -1070,12 +1112,15 @@
                         <h4 class="text-xl font-black mb-2 uppercase">Nube Sincronizada</h4>
                         <p class="text-slate-300 text-xs font-bold mb-3 uppercase tracking-tighter">Acceso
                             Multi-Pantalla</p>
-                        <p class="text-slate-400 text-[11px] leading-relaxed mb-4">Sincronización total entre
-                            dispositivos. Permite que cualquier terminal autorizada visualice el monitor de pedidos al
-                            instante.</p>
+                        <p class="text-slate-400 text-[11px] leading-relaxed mb-4">
+                            Sincronización total entre dispositivos.
+                            Tu negocio te sigue a donde vayas. Controlá la operación desde el celular mientras estás en
+                            casa.
+                            Cero latencia, cero excusas. Si está en la pantalla, es la verdad.
+                        </p>
                         <div class="pt-4 border-t border-white/5">
                             <span class="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Enfoque:
-                                Acceso Ubicuo</span>
+                                Control Remoto Total</span>
                         </div>
                     </div>
                 </div>
@@ -1087,7 +1132,7 @@
                         <div class="video-container transformation-avatar-box border-emerald-500/20 bg-slate-900 group">
                             <video id="dynamic-avatar-video" class="avatar-video" autoplay loop muted playsinline
                                 oncanplay="this.classList.add('loaded')">
-                                <source src="1.mp4" type="video/mp4">
+                                <source src="videos/1.mp4" type="video/mp4">
                             </video>
                             <div class="video-controls">
                                 <button class="control-btn" onclick="togglePlay('dynamic-avatar-video', this)"><i
@@ -1109,20 +1154,21 @@
                             <!-- Video Fase 1 -->
                             <video id="package-video-1" class="package-video" data-package="1" autoplay loop muted
                                 playsinline>
-                                <source src="n2.mp4" type="video/mp4">
+                                <source src="videos/n2.mp4" type="video/mp4">
                             </video>
 
                             <!-- Video Fase 2 -->
                             <video id="package-video-2" class="package-video hidden" style="object-fit: contain;"
                                 data-package="2" autoplay loop muted playsinline>
-                                <source src="capcut2.mp4" type="video/mp4">
+                                <source src="videos/capcut2.MOV" type="video/mp4">
                             </video>
 
                             <div class="absolute bottom-4 left-0 right-0 px-6 flex justify-between items-end z-10">
                                 <div>
                                     <h5 class="text-white font-black uppercase text-xs tracking-widest"
                                         id="current-status-name">Fase 01: Organización</h5>
-                                    <p class="text-slate-400 text-[9px] uppercase tracking-[0.2em] italic">Visualización
+                                    <p class="text-slate-400 text-[9px] uppercase tracking-[0.2em] italic">
+                                        Visualización
                                         Directa en Local</p>
                                 </div>
                                 <i class="fas fa-expand-alt text-emerald-500/50 text-xs"></i>
@@ -1267,8 +1313,8 @@
         }
 
         const packageData = {
-            1: { brand: "Fase 01: Organización", subtitle: "Consola de Control Local Proactiva", video: "1.mp4" },
-            2: { brand: "Fase 02: Conectividad", subtitle: "Sincronización en la Nube", video: "2.mp4" }
+            1: { brand: "Fase 01: Organización", subtitle: "Consola de Control Local Proactiva", video: "videos/1.mp4" },
+            2: { brand: "Fase 02: Conectividad", subtitle: "Sincronización en la Nube", video: "videos/2.mp4" }
         };
 
         function switchPackage(id, element) {
@@ -1315,73 +1361,73 @@
         const commandments = [
             {
                 id: 1,
-                title: "Estado del Pedido", // Renamed as per prompt list
+                title: "Estado del Pedido",
                 iconHTML: `<div class="relative flex items-center justify-center"><i class="far fa-comment-dots text-lg"></i><i class="fas fa-check absolute -bottom-1 -right-1 text-[10px] text-emerald-400 bg-slate-900 rounded-full border border-slate-900"></i></div>`,
-                before: "El mostrador es un nido de gritos. '¿Te llevaste el de la calle X?'. Incertidumbre constante.",
-                after: "La duda muere. El pedido está amarrado al repartidor en pantalla. Paz Mental."
+                imgBefore: "img/antes/1.webp",
+                videoAfter: "videos/diez/v1.mp4"
             },
             {
                 id: 2,
                 title: "Fin de la Lapicera",
                 iconHTML: `<i class="fas fa-hand-pointer text-lg"></i>`,
-                before: "Tickets manchados de grasa. Anotar números a mano doble vez. Cero eficiencia.",
-                after: "Drag-and-Drop. El sistema escribe por vos. Más rápido, más limpio."
+                imgBefore: "img/antes/2.webp",
+                videoAfter: "videos/diez/v2.mp4"
             },
             {
                 id: 3,
                 title: "Cero Papel",
                 iconHTML: `<div class="relative"><i class="fas fa-ticket-alt text-lg transform -rotate-12"></i><i class="fas fa-wind absolute -right-3 top-1 text-[10px] opacity-70"></i></div>`,
-                before: "Tickets que vuelan o se pierden. Dependencia total del papel físico.",
-                after: "Cero tickets viajando. Trazabilidad total digital desde el monitor."
+                imgBefore: "img/antes/3.webp",
+                videoAfter: "videos/diez/v3.mp4"
             },
             {
                 id: 4,
-                title: "Conteo Automático",
+                title: "Adiós al conteo manual",
                 iconHTML: `<div class="relative"><i class="fas fa-calculator text-lg text-slate-400"></i><div class="absolute inset-0 flex items-center justify-center"><div class="w-full h-0.5 bg-red-500 transform rotate-45"></div></div></div>`,
-                before: "Contando papeles arrugados a la 1 AM. El cansancio lleva al error.",
-                after: "Reportes instantáneos. Cierre de turno en 30 segundos con conteo exacto."
+                imgBefore: "img/antes/4.webp",
+                videoAfter: "videos/diez/v4.mp4"
             },
             {
                 id: 5,
-                title: "Dinero Blindado",
+                title: "Pedidos Bajo Control Total",
                 iconHTML: `<div class="relative flex items-center justify-center"><i class="fas fa-shield-alt text-lg"></i><span class="absolute text-[9px] font-black text-slate-900 pt-0.5">$</span></div>`,
-                before: "Pedidos entregados que se olvidan de cobrar. Dinero que se evapora.",
-                after: "Conciliación Blindada. Cada ID que salió debe ser rendido."
+                imgBefore: "img/antes/5.webp",
+                videoAfter: "videos/diez/v5.mp4"
             },
             {
                 id: 6,
-                title: "Historial de Viajes",
+                title: "Dominio Absoluto de Flota",
                 iconHTML: `<i class="fas fa-history text-lg"></i>`,
-                before: "'Esto no me lo diste'. Palabra contra palabra sin pruebas.",
-                after: "Historial Inmutable. Registro exacto de qué llevó cada uno y a qué hora."
+                imgBefore: "img/antes/6.webp",
+                videoAfter: "videos/diez/v6.mp4"
             },
             {
                 id: 7,
-                title: "No Duplicados",
+                title: "Cero Duplicados, Control Total",
                 iconHTML: `<div class="flex -space-x-2"><i class="fas fa-ban text-red-500"></i><i class="fas fa-ban text-red-500 opacity-70"></i></div>`,
-                before: "Dos repartidores se llevan el mismo pedido. Pédida doble.",
-                after: "Validación Atómica. El sistema bloquea asignaciones duplicadas."
+                imgBefore: "img/antes/7.webp",
+                videoAfter: "videos/diez/v7.mp4"
             },
             {
                 id: 8,
-                title: "Respuesta al Cliente",
+                title: "Información precisa para clientes",
                 iconHTML: `<div class="relative"><i class="fas fa-headset text-lg"></i><i class="fas fa-wifi absolute -top-2 -right-2 text-[8px] text-emerald-500"></i></div>`,
-                before: "'Ya debe estar por llegar'. Respuestas dudosas que destruyen reputación.",
-                after: "'Salió hace 12 minutos con Juan'. Precisión que fideliza clientes."
+                imgBefore: "img/antes/8.webp",
+                videoAfter: "videos/diez/v8.mp4"
             },
             {
                 id: 9,
-                title: "Ubicación Exacta",
+                title: "Pedidos ubicados al instante",
                 iconHTML: `<i class="fas fa-crosshairs text-lg"></i>`,
-                before: "Revolver montaña de tickets buscando el #145 mientras suena el teléfono.",
-                after: "Ubicación exacta al instante escribiendo solo el ID."
+                imgBefore: "img/antes/9.webp",
+                videoAfter: "videos/diez/v9.mp4"
             },
             {
                 id: 10,
-                title: "Torre de Control",
+                title: "Verdad Operativa",
                 iconHTML: `<i class="fas fa-broadcast-tower text-lg animate-pulse"></i>`,
-                before: "El 'me olvidé de anotar' es la excusa perfecta en el caos.",
-                after: "Torre de Control. La transparencia es total, la mentira no tiene lugar."
+                imgBefore: "img/antes/10.webp",
+                videoAfter: "videos/diez/v10.mp4"
             }
         ];
 
@@ -1402,8 +1448,10 @@
                 rotator.className = 'satellite-rotator';
 
                 // Create Inner Satellite (Handles Visuals + Float Animation)
-                const el = document.createElement('div');
+                const el = document.createElement('button'); // Changed to button for A11y
                 el.className = 'satellite';
+                el.type = 'button';
+                el.setAttribute('aria-label', `Ver mandamiento: ${cmd.title}`);
                 el.dataset.id = cmd.id;
                 // Use custom iconHTML
                 el.innerHTML = cmd.iconHTML;
@@ -1520,8 +1568,26 @@
 
             document.getElementById('modal-id').innerText = data.id.toString().padStart(2, '0');
             document.getElementById('modal-title').innerText = data.title;
-            document.getElementById('modal-text-before').innerText = data.before;
-            document.getElementById('modal-text-after').innerText = data.after;
+            // document.getElementById('modal-text-before').innerText = data.before; <-- REMOVED
+            // document.getElementById('modal-text-after').innerText = data.after; <-- REMOVED
+
+            const imgBefore = document.getElementById('modal-img-before');
+            const videoAfter = document.getElementById('modal-video-after');
+
+            if (data.imgBefore) {
+                imgBefore.src = data.imgBefore;
+                imgBefore.classList.remove('hidden');
+            } else {
+                imgBefore.classList.add('hidden');
+            }
+
+            if (data.videoAfter) {
+                videoAfter.src = data.videoAfter;
+                videoAfter.classList.remove('hidden');
+                videoAfter.play().catch(e => console.log("Video play failed:", e));
+            } else {
+                videoAfter.classList.add('hidden');
+            }
 
             document.getElementById('commandment-modal').classList.add('active');
             playTechPulse();
@@ -1587,7 +1653,7 @@
 
         function handleContact() {
             const msg = encodeURIComponent("Hola. Estoy interesado en conocer más sobre las fortalezas de RutaTotal 360 y cómo implementar el monitor de pedidos en mi local.");
-            window.open(`https://wa.me/?text=${msg}`, '_blank');
+            window.open(`https://rutatotal360.netlify.app/paquetes/index3.html`, '_blank');
         }
     </script>
 </body>
