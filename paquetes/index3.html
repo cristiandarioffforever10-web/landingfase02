@@ -188,12 +188,15 @@
 
             <form id="lead-form" class="space-y-5" onsubmit="handleLeadSubmit(event)">
                 <div>
-                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Comandante / Encargado</label>
+                    <label
+                        class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Comandante
+                        / Encargado</label>
                     <input type="text" id="lead-name" required placeholder="Ej: Juan Pérez"
                         class="w-full form-input px-5 py-4 rounded-xl font-medium">
                 </div>
                 <div>
-                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Base de Operaciones (Local)</label>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Base
+                        de Operaciones (Local)</label>
                     <input type="text" id="lead-local" required placeholder="Ej: Pizza House Ramos"
                         class="w-full form-input px-5 py-4 rounded-xl font-medium">
                 </div>
@@ -236,7 +239,8 @@
             <button onclick="closeVideoModal()" class="close-video">
                 <i class="fas fa-times"></i>
             </button>
-            <video id="pills-video" class="w-full h-full rounded-2xl shadow-2xl border border-white/10" playsinline muted loop preload="auto" controls>
+            <video id="pills-video" class="w-full h-full rounded-2xl shadow-2xl border border-white/10" playsinline
+                muted loop preload="auto" controls>
                 <source src="../videos/video_chatbot.mov" type="video/mp4">
                 <source src="../videos/video_chatbot.mov">
                 Tu navegador no soporta el tag de video.
@@ -270,7 +274,7 @@
     </div>
     <script type="module">
         import { PLANES_CONFIG as planes } from '../src/config/plans.js';
-        
+
         // --- FIREBASE CONFIG & ROUTER ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -321,7 +325,7 @@
                         ...sessionData,
                         savedAt: serverTimestamp()
                     });
-                } catch(e) { console.error("Chat log error:", e); }
+                } catch (e) { console.error("Chat log error:", e); }
             }
         }
 
@@ -334,33 +338,33 @@
                 this.data = { context: '', volume: '', specialty: '', nombre: '', local: '', plan: '' };
                 this.isOpen = false;
                 this.history = [];
-                
+
                 this.container = document.getElementById('chatbot-container');
                 this.messagesArea = document.getElementById('chat-messages');
                 this.inputArea = document.getElementById('chat-input-area');
                 this.triggerBtn = document.getElementById('chat-trigger');
 
                 this.bindEvents();
-            this.initFlow();
-        }
+                this.initFlow();
+            }
 
-        startPlanFlow(planName) {
-            this.data.plan = planName;
-            this.toggle('open');
-            this.messagesArea.innerHTML = '';
-            this.botSay(`¡Excelente elección! El <span class='text-emerald-400 font-black'>${planName}</span> es un gran paso hacia el control total.`);
-            setTimeout(() => {
-                this.botSay("Para darte el diagnóstico correcto y avanzar con este plan, ¿cuántos repartidores manejas actualmente?");
-                this.step = 'VOLUME';
-                this.renderOptions([
-                    { text: "1 a 5 Repartidores", value: "1-5" },
-                    { text: "5 a 10 Repartidores", value: "5-10" },
-                    { text: "+10 Repartidores", value: "+10" }
-                ]);
-            }, 800);
-        }
+            startPlanFlow(planName) {
+                this.data.plan = planName;
+                this.toggle('open');
+                this.messagesArea.innerHTML = '';
+                this.botSay(`¡Excelente elección! El <span class='text-emerald-400 font-black'>${planName}</span> es un gran paso hacia el control total.`);
+                setTimeout(() => {
+                    this.botSay("Para darte el diagnóstico correcto y avanzar con este plan, ¿cuántos repartidores manejas actualmente?");
+                    this.step = 'VOLUME';
+                    this.renderOptions([
+                        { text: "1 a 5 Repartidores", value: "1-5" },
+                        { text: "5 a 10 Repartidores", value: "5-10" },
+                        { text: "+10 Repartidores", value: "+10" }
+                    ]);
+                }, 800);
+            }
 
-        bindEvents() {
+            bindEvents() {
                 this.triggerBtn.onclick = () => this.toggle();
                 this.container.querySelector('button.text-white\\/50').onclick = () => this.toggle();
             }
@@ -402,7 +406,7 @@
                 const div = document.createElement('div');
                 div.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'} mb-4 animate-fade-in`;
                 const bubble = document.createElement('div');
-                bubble.className = sender === 'user' 
+                bubble.className = sender === 'user'
                     ? "bg-emerald-600/20 text-emerald-100 p-3 rounded-2xl rounded-tr-none max-w-[85%] border border-emerald-500/20"
                     : "bg-white/5 text-slate-300 p-3 rounded-2xl rounded-tl-none max-w-[85%] border border-white/10";
                 bubble.innerHTML = content;
@@ -415,7 +419,7 @@
                 this.inputArea.innerHTML = '';
                 const grid = document.createElement('div');
                 grid.className = "grid grid-cols-1 gap-2 w-full";
-                
+
                 options.forEach(opt => {
                     const btn = document.createElement('button');
                     btn.className = "w-full text-left bg-white/5 hover:bg-emerald-600/20 border border-white/10 hover:border-emerald-500/50 p-3 rounded-xl text-xs font-bold text-slate-300 transition-all transform hover:scale-[1.02] active:scale-95";
@@ -428,7 +432,7 @@
 
             handleSelection(opt) {
                 this.userSay(opt.text);
-                
+
                 if (this.step === 'HOOK') {
                     if (opt.value === 'curioso') {
                         this.botSay("¡Genial! El que curiosea es porque sabe que siempre hay algo que mejorar. 💡");
@@ -457,7 +461,7 @@
 
             nextStep() {
                 this.inputArea.innerHTML = '<div class="flex justify-center p-2"><i class="fas fa-circle-notch animate-spin text-emerald-500"></i></div>';
-                
+
                 setTimeout(() => {
                     if (this.step === 'VOLUME') {
                         this.botSay("Entendido. Para darte el diagnóstico correcto, ¿cuántos repartidores manejas actualmente?");
@@ -466,7 +470,7 @@
                             { text: "5 a 10 Repartidores", value: "5-10" },
                             { text: "+10 Repartidores", value: "+10" }
                         ]);
-                    } 
+                    }
                     else if (this.step === 'SPECIALTY') {
                         this.botSay("Perfecto. Cada cocina es un mundo diferente. ¿Cuál es la especialidad de tu local?");
                         this.renderOptions([
@@ -513,14 +517,14 @@
                 }
 
                 this.botSay(script);
-                
+
                 // FASE 4.5: El Puente de Valor (Micro-Demostración)
                 setTimeout(() => {
                     this.botSay("Así se ve tu operación bajo control en <span class='text-emerald-400 font-black'>Monitor de Pedidos</span>. ¿Te lo imaginas en tu local?");
                     this.botSay(`<div class="rounded-xl overflow-hidden border border-emerald-500/30 shadow-2xl mt-2">
                         <video src="../videos/monitor.MOV" autoplay loop muted playsinline class="w-full"></video>
                     </div>`);
-                    
+
                     setTimeout(() => {
                         this.botSay("Para enviarte el análisis de costos y la propuesta personalizada, ¿con quién tengo el gusto de hablar?");
                         this.step = 'LEAD_NAME';
@@ -540,7 +544,7 @@
                 `;
                 const input = document.getElementById('bot-input');
                 const btn = document.getElementById('bot-send-btn');
-                
+
                 const submit = () => {
                     const val = input.value.trim();
                     if (val) this.handleTextInput(val);
@@ -582,7 +586,7 @@
 
             finishFlow() {
                 this.botSay("<b>¡Análisis completado!</b> 🎯 El sistema está generando tu propuesta estratégica.");
-                
+
                 // Recomendación de Plan
                 const planRecomendado = (this.data.volume === '1-5') ? 'Fase 01: Organización' : 'Fase 02: Conectividad';
                 this.data.plan = planRecomendado;
@@ -611,12 +615,12 @@
                 `;
 
                 setTimeout(() => {
-                    const nicho = this.data.specialty === 'pizzeria' ? 'tu Pizzería' : 
-                                 this.data.specialty === 'sushi' ? 'tu Sushi' : 
-                                 this.data.specialty === 'burgers' ? 'tus Hamburguesas' : 'tu Restaurante';
-                    
+                    const nicho = this.data.specialty === 'pizzeria' ? 'tu Pizzería' :
+                        this.data.specialty === 'sushi' ? 'tu Sushi' :
+                            this.data.specialty === 'burgers' ? 'tus Hamburguesas' : 'tu Restaurante';
+
                     this.botSay(`Mira cómo transformamos el caos en <span class='text-emerald-400 font-black'>${nicho}</span> en 45 segundos.`);
-                    
+
                     setTimeout(() => {
                         this.botSay(`<button onclick="openVideoModal()" class="w-full bg-white/10 hover:bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 p-3 rounded-xl text-center font-black uppercase tracking-tight text-xs mt-2 flex items-center justify-center gap-2">
                             <i class="fas fa-play-circle"></i> Ver los 3 Mandamientos
@@ -628,7 +632,7 @@
                     const msg = `[ALTA PRIORIDAD] Soy ${this.data.nombre} de ${this.data.local} (${this.data.specialty}). Solicito presupuesto para ${this.data.volume} repartidores.`;
                     const encoded = encodeURIComponent(msg);
                     const waLink = `https://wa.me/5491112345678?text=${encoded}`;
-                    
+
                     this.botSay(`<a href="${waLink}" target="_blank" class="block w-full bg-emerald-600 hover:bg-emerald-500 text-white p-3 rounded-xl text-center font-black uppercase tracking-tight text-xs mt-4 animate-bounce">${ctaText}</a>`);
                 }, 4000);
             }
@@ -650,10 +654,10 @@
 
         window.handleLeadSubmit = async (event) => {
             event.preventDefault();
-            
+
             const btn = event.target.querySelector('button[type="submit"]');
             const originalText = btn.innerText;
-            
+
             // Visual Feedback: Processing
             btn.innerHTML = '<i class="fas fa-satellite-dish animate-pulse"></i> Sincronizando...';
             btn.disabled = true;
@@ -676,11 +680,11 @@
                 // WhatsApp Bridge
                 const msg = `[WEB FORM] Hola, soy ${leadData.nombre} de ${leadData.local}. Solicito activación del plan ${leadData.plan} para ${leadData.flota} repartidores.`;
                 const encoded = encodeURIComponent(msg);
-                window.open(`https://wa.me/5491112345678?text=${encoded}`, '_blank');
-                
+                window.open(`https://wa.me/5491159665917?text=${encoded}`, '_blank');
+
                 window.closeModal();
                 event.target.reset();
-                
+
                 // Restore Button
                 setTimeout(() => {
                     btn.innerText = originalText;
@@ -699,12 +703,12 @@
             const modal = document.getElementById('video-modal');
             const video = document.getElementById('pills-video');
             modal.classList.add('active');
-            
+
             // Forzar carga y reproducción
             video.currentTime = 0;
             video.load();
             const playPromise = video.play();
-            
+
             if (playPromise !== undefined) {
                 playPromise.catch(error => {
                     console.log("Autoplay prevented, showing controls:", error);
@@ -712,7 +716,7 @@
                     video.play();
                 });
             }
-            document.body.style.overflow = 'hidden'; 
+            document.body.style.overflow = 'hidden';
         };
 
         window.closeVideoModal = () => {
