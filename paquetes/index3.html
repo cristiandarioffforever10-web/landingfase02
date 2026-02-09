@@ -676,12 +676,15 @@
             btn.innerHTML = '<i class="fas fa-check"></i> Datos Recibidos';
             btn.classList.replace('btn-emerald', 'bg-emerald-600');
 
+
+            const PHONE = "5491159665917";
+
             setTimeout(() => {
                 // WhatsApp Bridge
                 const msg = `[WEB FORM] Hola, soy ${leadData.nombre} de ${leadData.local}. Solicito activación del plan ${leadData.plan} para ${leadData.flota} repartidores.`;
                 const encoded = encodeURIComponent(msg);
-                window.open(`https://wa.me/5491159665917?text=${encoded}`, '_blank');
-
+                //  window.open(`https://wa.me/5491159665917?text=${encoded}`, '_blank');
+                const waLink = `https://api.whatsapp.com/send?phone=${PHONE}&text=${encoded}`;
                 window.closeModal();
                 event.target.reset();
 
