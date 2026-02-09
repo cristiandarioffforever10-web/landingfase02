@@ -628,6 +628,7 @@
                     }, 1000);
                 }, 1500);
 
+
                 setTimeout(() => {
                     const msg = `[ALTA PRIORIDAD] Soy ${this.data.nombre} de ${this.data.local} (${this.data.specialty}). Solicito presupuesto para ${this.data.volume} repartidores.`;
                     const encoded = encodeURIComponent(msg);
@@ -677,12 +678,28 @@
             btn.classList.replace('btn-emerald', 'bg-emerald-600');
 
 
-
             setTimeout(() => {
-                // WhatsApp Bridge
-                const msg = `[WEB FORM] Hola, soy ${leadData.nombre} de ${leadData.local}. Solicito activación del plan ${leadData.plan} para ${leadData.flota} repartidores.`;
+                // WhatsApp Messages Logic
+                const msgMap = {
+                    'Plan Customizado': `Hola, soy ${leadData.nombre} de ${leadData.local}. Necesito asesoramiento experto para una operación de ${leadData.flota} repartidores.`,
+                    'default': `[WEB FORM] Hola, soy ${leadData.nombre} de ${leadData.local}. Solicito activación del plan ${leadData.plan} para ${leadData.flota} repartidores.`
+                };
+                const msg = msgMap[leadData.plan] || msgMap['default'];
                 const encoded = encodeURIComponent(msg);
-                window.open(`https://wa.me/5491159665917?text=${encoded}`, '_blank');
+
+                // Device Detection & Fallback Logic
+                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+                if (isMobile) {
+                    window.open(`https://wa.me/5491159665917?text=${encoded}`, '_blank');
+                } else {
+                    // Desktop Strategy: Open WhatsApp Web AND Show Fallback
+                    const waWindow = window.open(`https://web.whatsapp.com/send?phone=5491159665917&text=${encoded}`, '_blank');
+
+                    // If blocked or closed, we already have the lead in Firestore.
+                    // We show a 'Check' modal to confirm next steps
+                    alert("¡Gracias! Se intentó abrir WhatsApp Web. Si no se abrió, no te preocupes, ya recibimos tus datos y te contactaremos a la brevedad.");
+                }
 
                 window.closeModal();
                 event.target.reset();
